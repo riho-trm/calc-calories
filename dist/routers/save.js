@@ -76,7 +76,6 @@ router.put("/updatesaveddata", authenticate_1.authenticate, (req, res) => {
 });
 // ok
 router.put("/updatesavednutrients", authenticate_1.authenticate, (req, res) => {
-    console.log(req.body);
     const sql = "INSERT INTO saved_nutrients (id, saved_data_id, nutrient_id, quantity) VALUES ? ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)";
     pool.getConnection((err, connection) => {
         connection.query(sql, [req.body.editedData], function (err, result) {
@@ -90,7 +89,6 @@ router.put("/updatesavednutrients", authenticate_1.authenticate, (req, res) => {
 });
 // ok
 router.delete("/deletesavednutrients", authenticate_1.authenticate, (req, res) => {
-    console.log(req.body);
     const sql = "delete from saved_nutrients WHERE id in (?)";
     pool.getConnection((err, connection) => {
         connection.query(sql, [req.body.savedNutrientsId], function (err, result) {
@@ -106,7 +104,6 @@ router.delete("/deletesavednutrients", authenticate_1.authenticate, (req, res) =
 router.delete("/deletemydata", authenticate_1.authenticate, (req, res) => {
     const sevedDataSql = "delete from saved_data WHERE id=?";
     const savedNutrientsSql = "delete from saved_nutrients WHERE saved_data_id=?";
-    console.log(req.body.savedDataId);
     pool.getConnection((err, connection) => {
         connection.query(savedNutrientsSql, [req.body.savedDataId], function (err, result) {
             if (err) {

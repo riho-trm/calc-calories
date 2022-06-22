@@ -8,8 +8,6 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config");
 const authenticate = (req, res, next) => {
     const authHeader = req.headers["authorization"];
-    console.log("サーバーのauthenticateのheader表示");
-    console.log(authHeader);
     const token = authHeader && authHeader.split(" ")[1];
     if (token == null || undefined)
         return res

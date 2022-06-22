@@ -32,7 +32,7 @@ const saltRounds = 10;
 router.get("/test", (req, res) => {
     const sql = "select * from users";
     pool.getConnection(function (err, connection) {
-        connection.query(sql, function (err, result, fields) {
+        connection.query(sql, function (err, result) {
             if (err) {
                 throw err;
             }
@@ -53,13 +53,11 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
             if (err)
                 throw err;
             if (result.length >= 1) {
-                console.log(result);
                 connection.query(searchEmailSql, [req.body.email], (err, result) => {
                     if (err)
                         throw err;
                     // ユーザー名、メールアドレス共に重複
                     if (result.length >= 1) {
-                        console.log(result);
                         res.json({
                             status: "error",
                             message: {
@@ -70,7 +68,6 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
                     }
                     else if (result.length === 0) {
                         // ユーザー名重複
-                        console.log(result);
                         res.json({
                             status: "error",
                             message: {
@@ -84,12 +81,10 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
             }
             else if (result.length === 0) {
                 //メールアドレス重複
-                console.log(result);
                 connection.query(searchEmailSql, [req.body.email], (err, result) => {
                     if (err)
                         throw err;
                     if (result.length >= 1) {
-                        console.log(result);
                         res.json({
                             status: "error",
                             message: {
@@ -108,7 +103,6 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
                         ], (err, result) => {
                             if (err)
                                 throw err;
-                            console.log(result);
                             res.json(result);
                         });
                     }
@@ -126,7 +120,6 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
             if (err)
                 throw err;
             if (result.length === 0) {
-                console.log("このアドレスは登録されていません");
                 res.json({
                     status: "error",
                     message: { email: "このアドレスは登録されていません", password: "" },
@@ -135,7 +128,6 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
             else {
                 const match = yield bcrypt_1.default.compare(req.body.password, result[0].password);
                 if (!match) {
-                    console.log("パスワードが間違っています");
                     res.json({
                         status: "error",
                         message: { email: "", password: "パスワードが間違っています" },
@@ -148,8 +140,6 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
                         createdAt: result[0].created_at,
                     };
                     const token = jsonwebtoken_1.default.sign(payload, config_1.config.jwt.secret, config_1.config.jwt.options);
-                    console.log("サーバーのloginの成功時のトークン表示");
-                    console.log(token);
                     res.json({
                         status: "success",
                         token,

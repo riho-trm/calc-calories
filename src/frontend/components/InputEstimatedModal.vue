@@ -94,22 +94,15 @@ export default defineComponent({
     let calculatedQuantity = 0;
 
     watch(estimatedIdList, () => {
-      console.log("watchが呼ばれた");
-      console.log(props.estimatedIdList);
-      console.log(estimatedIdList);
       options.splice(0);
       for (const id of props.estimatedIdList) {
-        console.log(id);
-
         const res = store.getters.getEstimatedAmount(id);
-        console.log(res);
         options.push({
           label: res.unit,
           unit: res.unit,
           standardQuantity: res.standardQuantity,
         });
       }
-      console.log(options);
     });
 
     const setFoodName = computed(() => {
@@ -120,7 +113,6 @@ export default defineComponent({
 
     const calcQuantity = computed(() => {
       const calcData = select.value.standardQuantity * quantity.value;
-      console.log(Math.round(calcData * 100) / 100);
       if (isNaN(calcData)) {
         calculatedQuantity = 0;
         return calculatedQuantity;

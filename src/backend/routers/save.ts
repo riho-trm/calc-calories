@@ -1,6 +1,4 @@
 import express from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 import mysql from "mysql";
 import { authenticate } from "../middlewares/authenticate";
 
@@ -86,7 +84,6 @@ router.put("/updatesaveddata", authenticate, (req, res) => {
 
 // ok
 router.put("/updatesavednutrients", authenticate, (req, res) => {
-  console.log(req.body);
   const sql =
     "INSERT INTO saved_nutrients (id, saved_data_id, nutrient_id, quantity) VALUES ? ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)";
   pool.getConnection((err, connection) => {
@@ -101,7 +98,6 @@ router.put("/updatesavednutrients", authenticate, (req, res) => {
 });
 // ok
 router.delete("/deletesavednutrients", authenticate, (req, res) => {
-  console.log(req.body);
   const sql = "delete from saved_nutrients WHERE id in (?)";
   pool.getConnection((err, connection) => {
     connection.query(sql, [req.body.savedNutrientsId], function (err, result) {
@@ -118,7 +114,6 @@ router.delete("/deletesavednutrients", authenticate, (req, res) => {
 router.delete("/deletemydata", authenticate, (req, res) => {
   const sevedDataSql = "delete from saved_data WHERE id=?";
   const savedNutrientsSql = "delete from saved_nutrients WHERE saved_data_id=?";
-  console.log(req.body.savedDataId);
   pool.getConnection((err, connection) => {
     connection.query(
       savedNutrientsSql,

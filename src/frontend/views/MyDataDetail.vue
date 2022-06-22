@@ -412,7 +412,6 @@ export default defineComponent({
      * @param foodName - サジェストリストから選択された食品名
      */
     const selectItem = async (foodName: string) => {
-      console.log("selectItemがよばれた");
       const nutrientRes: Nutrients = await store.getters.calcNutrientsQuanrity(
         foodName,
         0
@@ -426,7 +425,6 @@ export default defineComponent({
         estimatedIdList: estimatedIdRes,
         nutrient: nutrientRes,
       });
-      console.log(typeahead.value);
 
       // モジュールのdata内のinputにアクセスしてリセット
       typeahead.value.input = "";
@@ -435,7 +433,6 @@ export default defineComponent({
      * タイトル、メモ、urlが更新された際に更新済み変数に格納.
      */
     const onUpdateMyData = () => {
-      console.log("メモ更新済み");
       editedMyData.isEdited = true;
       editedMyData.title = defaultMyData.title;
       editedMyData.memo = defaultMyData.memo;
@@ -453,7 +450,6 @@ export default defineComponent({
       index: number,
       foodName: string
     ) => {
-      console.log("calcNutrientがよばれた");
       // 対象の食品名、量をストアに送って計算結果を返してもらう
       const res: Nutrients = store.getters.calcNutrientsQuanrity(
         foodName,
@@ -494,18 +490,14 @@ export default defineComponent({
       savedNutrientsId: number,
       newQuantity: number
     ) => {
-      console.log("updateEditedNutrientsがよばれた");
-      console.log(savedNutrientsId);
       // editedMyNutrientsに同一idの食品情報が保存されている場合にtrue
       let hasId = false;
 
       if (savedNutrientsId === -100) {
         // savedNutrientsIdが-100（新規登録食品）の場合は何もしない
-        console.log("1-1:savedNutrientsIdが-100");
         return;
       } else if (editedMyNutrients.editedData === undefined) {
         // 初めてeditedMyNutrientsに格納処理を行う場合に配列を作成する
-        console.log("1-2:初めてeditedMyNutrientsに格納");
         editedMyNutrients.isEdited = true;
         editedMyNutrients.editedData = [];
         editedMyNutrients.editedData.push({
@@ -513,28 +505,22 @@ export default defineComponent({
           quantity: newQuantity,
         });
       } else {
-        console.log("1-3:editedMyNutrientsに格納（通常）");
         editedMyNutrients.isEdited = true;
         // 同一情報がすでに変数内にある場合は更新する
         for (const data of editedMyNutrients.editedData) {
           if (data.savedNutrientsId === savedNutrientsId) {
-            console.log(
-              "2-1::同一情報がすでにeditedMyNutrients内にあるため更新"
-            );
             data.quantity = newQuantity;
             hasId = true;
           }
         }
         // ない場合は新しく配列に情報を入れる
         if (!hasId) {
-          console.log("2-2:同一情報がeditedMyNutrients内にないので追加");
           editedMyNutrients.editedData.push({
             savedNutrientsId: savedNutrientsId,
             quantity: newQuantity,
           });
         }
       }
-      console.log(editedMyNutrients);
     };
     /**
      *  食品情報を削除する.
@@ -564,18 +550,14 @@ export default defineComponent({
      * @param savedNutrientsId - DBに格納されているmyデータの栄養素id
      */
     const updateDeletedMyNutrients = (savedNutrientsId: number) => {
-      console.log("updateDeletedMyNutrientsがよばれた");
       // 削除済みリスト追加処理
       if (savedNutrientsId === -100) {
-        console.log("1-1:savedNutrientsIdが-100");
         return;
       } else if (deletedMyNutirients.savedNutrientsId === undefined) {
-        console.log("1-2:初めてdeletedMyNutirients.savedNutrientsIdに格納");
         deletedMyNutirients.isDeleted = true;
         deletedMyNutirients.savedNutrientsId = [];
         deletedMyNutirients.savedNutrientsId.push(savedNutrientsId);
       } else {
-        console.log("1-3:deletedMyNutirients.savedNutrientsIdに格納（通常）");
         deletedMyNutirients.isDeleted = true;
         deletedMyNutirients.savedNutrientsId.push(savedNutrientsId);
       }
@@ -585,17 +567,10 @@ export default defineComponent({
           editedMyNutrients.editedData[index].savedNutrientsId ===
           savedNutrientsId
         ) {
-          console.log("2-1:削除したデータがeditedMyNutrientsにある場合削除");
           editedMyNutrients.editedData.splice(Number(index), 1);
-          console.log(editedMyNutrients);
         }
         if (editedMyNutrients.editedData.length === 0) {
-          console.log(
-            "3-1:editedMyNutrients.editedData配列が空になったのでフラグをおろす"
-          );
-
           editedMyNutrients.isEdited = false;
-          console.log(editedMyNutrients);
         }
       }
     };
@@ -630,7 +605,6 @@ export default defineComponent({
       index: number,
       foodName: string
     ) => {
-      console.log(calculatedQuantity, index);
       defaultMyNutrients[index].quantity = calculatedQuantity;
       calcNutrient(calculatedQuantity, index, foodName);
       closeInputEstimatedModal();
@@ -674,12 +648,10 @@ export default defineComponent({
      */
     const deleteMyData = async () => {
       try {
-        console.log(defaultMyData.savedDataId);
         const res = await store.dispatch(
           "deleteMyData",
           defaultMyData.savedDataId
         );
-        console.log(res);
         router.push("/mydatalist");
       } catch (error: any) {
         if (error.status === 401) {
@@ -733,13 +705,8 @@ export default defineComponent({
      * 変更データを保存する.
      */
     const save = async () => {
-      console.log(editedMyData.isEdited);
-      console.log(editedMyNutrients.isEdited);
-      console.log(deletedMyNutirients.isDeleted);
-
       try {
         if (editedMyData.isEdited === true) {
-          console.log("saved_dataを更新");
           await store.dispatch("updateSavedData", {
             title: editedMyData.title,
             memo: editedMyData.memo,
@@ -748,7 +715,6 @@ export default defineComponent({
           });
         }
         if (editedMyNutrients.isEdited === true) {
-          console.log("saved_nutrientsを更新");
           let editedData = [];
           for (const data of editedMyNutrients.editedData) {
             editedData.push([data.savedNutrientsId, 0, 0, data.quantity]);
@@ -758,7 +724,6 @@ export default defineComponent({
           });
         }
         if (deletedMyNutirients.isDeleted === true) {
-          console.log("saved_nutrientsを削除");
           const savedNutrientsId: number[] = [];
           deletedMyNutirients.savedNutrientsId.forEach((data) =>
             savedNutrientsId.push(data)
@@ -777,7 +742,6 @@ export default defineComponent({
           }
         }
         if (sendDataOfMyNutrients.length >= 1) {
-          console.log("新規食品を追加");
           await store.dispatch("saveMyNutrients", sendDataOfMyNutrients);
         }
         router.push("/mydatalist");

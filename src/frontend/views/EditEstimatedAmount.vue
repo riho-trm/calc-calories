@@ -151,7 +151,6 @@ export default defineComponent({
     const created = async () => {
       const targetId = Number(route.params.id);
       const res = await store.getters.getEstimatedAmount(targetId);
-      console.log(res);
       if (res === undefined) {
         router.push("/notfound");
       } else {
@@ -161,7 +160,6 @@ export default defineComponent({
         state.unit = res.unit;
         state.standardQuantity = res.standardQuantity;
         state.includeDisposal = Boolean(res.includeDisposal);
-        console.log(state);
       }
     };
     created();
@@ -169,7 +167,6 @@ export default defineComponent({
     const fixedStandardQuantity = (value: string) => {
       const standardQuantityRegex = /^([1-9]\d*|0)(\.\d+)?$/;
       if (value.length == 0) {
-        console.log("valueが0");
         return true;
       } else {
         return standardQuantityRegex.test(value);

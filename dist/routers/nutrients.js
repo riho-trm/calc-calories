@@ -39,8 +39,6 @@ router.post("/registestimatedquantity", authenticate_1.authenticate, (req, res) 
         ], (err, result) => {
             if (err)
                 throw err;
-            console.log("サーバーのestimatedQuantity登録の結果");
-            console.log(result);
             res.json({ status: "success" });
             connection.release();
         });

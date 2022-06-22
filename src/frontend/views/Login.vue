@@ -148,7 +148,6 @@ export default defineComponent({
     const v$ = useVuelidate(rules, state);
     const validateTest = async () => {
       const isFormCorrect = await v$.value.$validate();
-      console.log(v$);
       if (!isFormCorrect) return;
       // バリデーションエラーじゃない場合にやりたい処理
       resErrorMessage.email = "";
@@ -158,7 +157,6 @@ export default defineComponent({
     const handleLogin = async (authInfo: InputType) => {
       try {
         const res = await store.dispatch("login", authInfo);
-        console.log(res);
         if (res.status === "error") {
           resErrorMessage.email = res.message.email;
           resErrorMessage.password = res.message.password;
