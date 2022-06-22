@@ -8,6 +8,7 @@ import { authenticate } from "../middlewares/authenticate";
 const router: express.Router = express.Router();
 router.use(express.json());
 
+// ConnectionPoolの設定
 const pool = mysql.createPool({
   host: "us-cdbr-east-05.cleardb.net",
   user: "be3a5ee1ceb501",
@@ -151,6 +152,7 @@ router.post("/login", async (req, res) => {
   });
 });
 
+// 全栄養素を取得する
 router.get("/nutrientslist", authenticate, (req, res) => {
   const sql = "select * from nutrients";
   pool.getConnection((err, connection) => {

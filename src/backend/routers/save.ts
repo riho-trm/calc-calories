@@ -12,6 +12,7 @@ const pool = mysql.createPool({
   database: "heroku_05e0dc039ab6269",
 });
 
+// myデータを新規登録する
 router.post("/savemydata", authenticate, (req, res) => {
   const sql =
     "INSERT INTO saved_data (user_id, title, memo, url) VALUES (?,?,?,?)";
@@ -28,6 +29,7 @@ router.post("/savemydata", authenticate, (req, res) => {
   });
 });
 
+// myデータに紐づく栄養情報を登録する
 router.post("/savemynutrients", authenticate, (req, res) => {
   const sql =
     // 配列でinsertするときのvaluesは?ひとつのみ
@@ -41,6 +43,7 @@ router.post("/savemynutrients", authenticate, (req, res) => {
   });
 });
 
+// ユーザーidに基づくmyデータを取得する
 router.get("/getmydata", authenticate, (req, res) => {
   const sql = "SELECT * FROM saved_data WHERE user_id=?";
   // getメソッドで絞り込み条件を渡す際にはqueryに渡す
@@ -53,6 +56,7 @@ router.get("/getmydata", authenticate, (req, res) => {
   });
 });
 
+// myデータに紐づく栄養情報を取得する
 router.get("/getmynutrients", authenticate, (req, res) => {
   const sql = "SELECT * FROM saved_nutrients WHERE saved_data_id in (?)";
   pool.getConnection((err, connection) => {
@@ -64,7 +68,7 @@ router.get("/getmynutrients", authenticate, (req, res) => {
   });
 });
 
-// ok
+// myデータを更新する
 router.put("/updatesaveddata", authenticate, (req, res) => {
   const sql = "update saved_data set title=?, memo=?, url=? WHERE id=?";
   pool.getConnection((err, connection) => {
@@ -82,7 +86,7 @@ router.put("/updatesaveddata", authenticate, (req, res) => {
   });
 });
 
-// ok
+// myデータに紐づく栄養情報を更新する
 router.put("/updatesavednutrients", authenticate, (req, res) => {
   const sql =
     "INSERT INTO saved_nutrients (id, saved_data_id, nutrient_id, quantity) VALUES ? ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)";
@@ -96,7 +100,8 @@ router.put("/updatesavednutrients", authenticate, (req, res) => {
     });
   });
 });
-// ok
+
+// myデータに紐づく栄養素を削除する
 router.delete("/deletesavednutrients", authenticate, (req, res) => {
   const sql = "delete from saved_nutrients WHERE id in (?)";
   pool.getConnection((err, connection) => {
@@ -110,7 +115,7 @@ router.delete("/deletesavednutrients", authenticate, (req, res) => {
   });
 });
 
-// ok
+// myデータを削除する（紐づく栄養素も削除）
 router.delete("/deletemydata", authenticate, (req, res) => {
   const sevedDataSql = "delete from saved_data WHERE id=?";
   const savedNutrientsSql = "delete from saved_nutrients WHERE saved_data_id=?";

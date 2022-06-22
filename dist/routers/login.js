@@ -20,6 +20,7 @@ const config_1 = require("../config");
 const authenticate_1 = require("../middlewares/authenticate");
 const router = express_1.default.Router();
 router.use(express_1.default.json());
+// ConnectionPoolの設定
 const pool = mysql_1.default.createPool({
     host: "us-cdbr-east-05.cleardb.net",
     user: "be3a5ee1ceb501",
@@ -154,6 +155,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }));
     });
 }));
+// 全栄養素を取得する
 router.get("/nutrientslist", authenticate_1.authenticate, (req, res) => {
     const sql = "select * from nutrients";
     pool.getConnection((err, connection) => {
