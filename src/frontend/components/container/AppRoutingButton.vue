@@ -10,10 +10,12 @@ import { useRouter } from "vue-router";
 export default defineComponent({
   components: { BaseButton },
   props: {
+    // ボタンに表示するテキスト
     buttonText: {
       type: String,
       default: "PUSH",
     },
+    // ルーティング先
     routing: {
       type: String,
       required: true,
@@ -21,6 +23,10 @@ export default defineComponent({
   },
   setup(props) {
     const router = useRouter();
+
+    /**
+     * ルーティングを実施.
+     */
     const routeTo = () => {
       router.push("/" + props.routing);
     };
