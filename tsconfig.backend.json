@@ -10,9 +10,9 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "*": ["node_modules/*", "src/backend/types/*"]
+      "*": ["node_modules/*", "node_modules/@types/*", "src/backend/types/*"]
     },
-    "typeRoots": ["src/backend/@types", "node_modules/@types"]
+    "typeRoots": ["src/backend/@types"] //"node_modules/@types"
   },
   "include": ["src/backend/**/*.ts"],
   "exclude": ["node_modules"]
