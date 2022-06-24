@@ -9,11 +9,12 @@ const authenticate_1 = require("../middlewares/authenticate");
 const router = express_1.default.Router();
 router.use(express_1.default.json());
 const pool = mysql_1.default.createPool({
-    host: "us-cdbr-east-05.cleardb.net",
-    user: "be3a5ee1ceb501",
-    password: "224a4fb1",
-    database: "heroku_05e0dc039ab6269",
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.PASS,
+    database: process.env.DB,
 });
+// myデータを新規登録する
 router.post("/savemydata", authenticate_1.authenticate, (req, res) => {
     const sql = "INSERT INTO saved_data (user_id, title, memo, url) VALUES (?,?,?,?)";
     pool.getConnection((err, connection) => {
@@ -25,6 +26,7 @@ router.post("/savemydata", authenticate_1.authenticate, (req, res) => {
         });
     });
 });
+// myデータに紐づく栄養情報を登録する
 router.post("/savemynutrients", authenticate_1.authenticate, (req, res) => {
     const sql = 
     // 配列でinsertするときのvaluesは?ひとつのみ
@@ -38,6 +40,7 @@ router.post("/savemynutrients", authenticate_1.authenticate, (req, res) => {
         });
     });
 });
+// ユーザーidに基づくmyデータを取得する
 router.get("/getmydata", authenticate_1.authenticate, (req, res) => {
     const sql = "SELECT * FROM saved_data WHERE user_id=?";
     // getメソッドで絞り込み条件を渡す際にはqueryに渡す
@@ -50,6 +53,7 @@ router.get("/getmydata", authenticate_1.authenticate, (req, res) => {
         });
     });
 });
+// myデータに紐づく栄養情報を取得する
 router.get("/getmynutrients", authenticate_1.authenticate, (req, res) => {
     const sql = "SELECT * FROM saved_nutrients WHERE saved_data_id in (?)";
     pool.getConnection((err, connection) => {
@@ -61,7 +65,7 @@ router.get("/getmynutrients", authenticate_1.authenticate, (req, res) => {
         });
     });
 });
-// ok
+// myデータを更新する
 router.put("/updatesaveddata", authenticate_1.authenticate, (req, res) => {
     const sql = "update saved_data set title=?, memo=?, url=? WHERE id=?";
     pool.getConnection((err, connection) => {
@@ -74,9 +78,8 @@ router.put("/updatesaveddata", authenticate_1.authenticate, (req, res) => {
         });
     });
 });
-// ok
+// myデータに紐づく栄養情報を更新する
 router.put("/updatesavednutrients", authenticate_1.authenticate, (req, res) => {
-    console.log(req.body);
     const sql = "INSERT INTO saved_nutrients (id, saved_data_id, nutrient_id, quantity) VALUES ? ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)";
     pool.getConnection((err, connection) => {
         connection.query(sql, [req.body.editedData], function (err, result) {
@@ -88,9 +91,8 @@ router.put("/updatesavednutrients", authenticate_1.authenticate, (req, res) => {
         });
     });
 });
-// ok
+// myデータに紐づく栄養素を削除する
 router.delete("/deletesavednutrients", authenticate_1.authenticate, (req, res) => {
-    console.log(req.body);
     const sql = "delete from saved_nutrients WHERE id in (?)";
     pool.getConnection((err, connection) => {
         connection.query(sql, [req.body.savedNutrientsId], function (err, result) {
@@ -102,11 +104,10 @@ router.delete("/deletesavednutrients", authenticate_1.authenticate, (req, res) =
         });
     });
 });
-// ok
+// myデータを削除する（紐づく栄養素も削除）
 router.delete("/deletemydata", authenticate_1.authenticate, (req, res) => {
     const sevedDataSql = "delete from saved_data WHERE id=?";
     const savedNutrientsSql = "delete from saved_nutrients WHERE saved_data_id=?";
-    console.log(req.body.savedDataId);
     pool.getConnection((err, connection) => {
         connection.query(savedNutrientsSql, [req.body.savedDataId], function (err, result) {
             if (err) {

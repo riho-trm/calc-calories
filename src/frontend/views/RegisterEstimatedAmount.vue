@@ -162,17 +162,12 @@ export default defineComponent({
     };
     created();
 
-    onMounted(() => {
-      console.log(v$);
-    });
-
     const selectItem = (item: any) => {
       state.nutrientsListFoodName = item;
     };
 
     const fixedStandardQuantity = (value: string) => {
       const standardQuantityRegex = /^([1-9]\d*|0)(\.\d+)?$/;
-      console.log(value);
       if (value == null || value.length == 0) {
         return true;
       } else {
@@ -191,7 +186,6 @@ export default defineComponent({
     }));
     const v$ = useVuelidate(rules, state);
     const validateTest = async () => {
-      console.log(v$);
       const isFormCorrect = await v$.value.$validate();
       if (!isFormCorrect) return;
       // バリデーションエラーじゃない場合にやりたい処理
@@ -201,7 +195,6 @@ export default defineComponent({
     const save = async (data: any) => {
       try {
         const res = await store.dispatch("saveEstimatedQuantity", data);
-        console.dir(JSON.stringify(res));
         router.push("/adminmenu");
       } catch (error: any) {
         if (error.status === 401) {

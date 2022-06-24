@@ -78,11 +78,14 @@ export default defineComponent({
     const memo = ref("");
     const url = ref("");
 
+    // バリデーションルール
     const rules = computed(() => ({
       title: { required },
     }));
     const v$ = useVuelidate(rules, state);
-
+    /**
+     * キャンセルを通知.
+     */
     const close = () => {
       context.emit("close");
       // title.value = "";
@@ -90,6 +93,12 @@ export default defineComponent({
       memo.value = "";
       url.value = "";
     };
+    /**
+     * 反映ボタンが押された際の処理.
+     *
+     * @remarks
+     * バリデーションチェックを行い、エラーでない場合親に各値と共に反映ボタンが押されたことを通知.
+     */
     const processing = async () => {
       const isFormCorrect = await v$.value.$validate();
       if (!isFormCorrect) return;

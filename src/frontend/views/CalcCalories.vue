@@ -200,7 +200,6 @@ export default defineComponent({
         sugestItems = store.getters.getSugestList;
         await store.dispatch("getEstimatedQuantity");
       } catch (error: any) {
-        console.log(error.status);
         if (error.status === 401) {
           await store
             .dispatch("logout")
@@ -242,7 +241,6 @@ export default defineComponent({
         estimatedIdList: estimatedIdRes,
         nutrient: nutrientRes,
       });
-      console.log(state);
 
       // モジュールのdata内のinputにアクセスしてリセット
       typeahead.value.input = "";
@@ -258,7 +256,6 @@ export default defineComponent({
         quantity
       );
       state[index].nutrient = res;
-      console.log(state[index]);
       resetTotalNutrient();
       for (const totalKey in totalNutrient) {
         for (const nutrient of state) {
@@ -275,7 +272,6 @@ export default defineComponent({
           }
         }
       }
-      console.log(totalNutrient);
     };
 
     const deleteItem = (index: number) => {
@@ -292,7 +288,6 @@ export default defineComponent({
           }
         }
       }
-      console.log(totalNutrient);
       state.splice(index, 1);
     };
     const resetItem = () => {
@@ -332,7 +327,6 @@ export default defineComponent({
       index: number,
       foodName: string
     ) => {
-      console.log(calculatedQuantity, index);
       state[index].quantity = calculatedQuantity;
       calcNutrient(calculatedQuantity, index, foodName);
       closeInputEstimatedModal();

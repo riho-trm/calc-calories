@@ -8,11 +8,12 @@ import { authenticate } from "../middlewares/authenticate";
 const router: express.Router = express.Router();
 router.use(express.json());
 
+// ConnectionPoolの設定
 const pool = mysql.createPool({
-  host: "us-cdbr-east-05.cleardb.net",
-  user: "be3a5ee1ceb501",
-  password: "224a4fb1",
-  database: "heroku_05e0dc039ab6269",
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASS,
+  database: process.env.DB,
 });
 
 // ハッシュ化のための回数
@@ -22,7 +23,7 @@ const saltRounds = 10;
 router.get("/test", (req, res) => {
   const sql = "select * from users";
   pool.getConnection(function (err, connection) {
-    connection.query(sql, function (err, result, fields) {
+    connection.query(sql, function (err, result) {
       if (err) {
         throw err;
       }
@@ -46,12 +47,10 @@ router.post("/register", async (req, res) => {
     connection.query(searchUsernameSql, [req.body.userName], (err, result) => {
       if (err) throw err;
       if (result.length >= 1) {
-        console.log(result);
         connection.query(searchEmailSql, [req.body.email], (err, result) => {
           if (err) throw err;
           // ユーザー名、メールアドレス共に重複
           if (result.length >= 1) {
-            console.log(result);
             res.json({
               status: "error",
               message: {
@@ -61,7 +60,6 @@ router.post("/register", async (req, res) => {
             });
           } else if (result.length === 0) {
             // ユーザー名重複
-            console.log(result);
             res.json({
               status: "error",
               message: {
@@ -74,11 +72,9 @@ router.post("/register", async (req, res) => {
         });
       } else if (result.length === 0) {
         //メールアドレス重複
-        console.log(result);
         connection.query(searchEmailSql, [req.body.email], (err, result) => {
           if (err) throw err;
           if (result.length >= 1) {
-            console.log(result);
             res.json({
               status: "error",
               message: {
@@ -98,7 +94,6 @@ router.post("/register", async (req, res) => {
               ],
               (err, result) => {
                 if (err) throw err;
-                console.log(result);
                 res.json(result);
               }
             );
@@ -117,7 +112,6 @@ router.post("/login", async (req, res) => {
     connection.query(searchUserSql, [req.body.email], async (err, result) => {
       if (err) throw err;
       if (result.length === 0) {
-        console.log("このアドレスは登録されていません");
         res.json({
           status: "error",
           message: { email: "このアドレスは登録されていません", password: "" },
@@ -128,7 +122,6 @@ router.post("/login", async (req, res) => {
           result[0].password
         );
         if (!match) {
-          console.log("パスワードが間違っています");
           res.json({
             status: "error",
             message: { email: "", password: "パスワードが間違っています" },
@@ -144,8 +137,6 @@ router.post("/login", async (req, res) => {
             config.jwt.secret,
             config.jwt.options
           );
-          console.log("サーバーのloginの成功時のトークン表示");
-          console.log(token);
           res.json({
             status: "success",
             token,
@@ -161,6 +152,7 @@ router.post("/login", async (req, res) => {
   });
 });
 
+// 全栄養素を取得する
 router.get("/nutrientslist", authenticate, (req, res) => {
   const sql = "select * from nutrients";
   pool.getConnection((err, connection) => {

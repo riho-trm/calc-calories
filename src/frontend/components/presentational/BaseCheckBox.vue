@@ -22,11 +22,13 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    // チェックボックスのon/offの値
     modelValue: {
       type: Boolean,
       required: true,
     },
   },
+  // チェックボックスの値を通知する
   emits: ["update:modelValue"],
 });
 </script>

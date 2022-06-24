@@ -14,8 +14,6 @@
           />
         </div>
         <div class="quantity-form">
-          <!-- required、数字のみのバリデーションを行う -->
-          <!-- v-modelの設定 -->
           <div class="quantity-input">
             <BaseLabel id="quantity">量</BaseLabel>
             <BaseInput
@@ -26,7 +24,6 @@
             />
           </div>
           <div class="unit-input">
-            <!-- requiredのバリデーションを行う -->
             <BaseLabel id="unit">単位</BaseLabel>
             <v-select
               name="unit"
@@ -75,7 +72,9 @@ export default defineComponent({
       default: false,
     },
     foodName: { type: String, required: true },
+    // 目安量id一覧
     estimatedIdList: { type: Array, required: true },
+    // 親コンポーネントの選択済み食品配列のインデックス番号
     index: { type: Number, required: true },
   },
   emits: ["cancel", "processing"],
@@ -86,41 +85,57 @@ export default defineComponent({
 
     const store = useStore();
 
+    // propsのestimatedIdListを新たな配列に格納
     const { estimatedIdList } = toRefs(props);
+    // 単位のセレクトボックスで選択された値が入る
     let select = ref("") as any;
+    // 単位のセレクトボックスで使用する値
     let options = reactive([]) as Selected[];
+    // 単位に対する値
     let quantity = ref(0);
+    // propsの食材名を格納
     let copiedFoodName = "";
+    // 計算後の食材量
     let calculatedQuantity = 0;
 
+    /**
+     * optionsに目安量を格納する.
+     *
+     * @remarks
+     * propsのestimatedIdListに値が入ってきたら、APIから目安量を取得してoptionsに格納する
+     */
     watch(estimatedIdList, () => {
-      console.log("watchが呼ばれた");
-      console.log(props.estimatedIdList);
-      console.log(estimatedIdList);
+      // optionsの値を削除
       options.splice(0);
       for (const id of props.estimatedIdList) {
-        console.log(id);
-
         const res = store.getters.getEstimatedAmount(id);
-        console.log(res);
         options.push({
           label: res.unit,
           unit: res.unit,
           standardQuantity: res.standardQuantity,
         });
       }
-      console.log(options);
     });
 
+    /**
+     * copiedFoodNameに食材名を格納する.
+     *
+     * @remarks
+     * propsのefoodNameに値が入ってきたら、copiedFoodNameに格納する
+     */
     const setFoodName = computed(() => {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       copiedFoodName = props.foodName;
       return copiedFoodName;
     });
 
+    /**
+     * 登録された目安量に基づいて食材量を計算する.
+     *
+     * @returns 数字でなければ0、数字であれば目安量に基づいた計算値
+     */
     const calcQuantity = computed(() => {
       const calcData = select.value.standardQuantity * quantity.value;
-      console.log(Math.round(calcData * 100) / 100);
       if (isNaN(calcData)) {
         calculatedQuantity = 0;
         return calculatedQuantity;
@@ -130,6 +145,9 @@ export default defineComponent({
       }
     });
 
+    /**
+     * モーダルの閉じるボタンを押されたことを通知.
+     */
     const cancel = () => {
       context.emit("cancel");
       select.value = "";
@@ -137,6 +155,9 @@ export default defineComponent({
       copiedFoodName = "";
       calculatedQuantity = 0;
     };
+    /**
+     * 反映ボタンが押されたことを通知.
+     */
     const processing = () => {
       context.emit(
         "processing",

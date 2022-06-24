@@ -11,12 +11,16 @@ import { defineComponent } from "@vue/runtime-core";
 
 export default defineComponent({
   props: {
+    // ボタンに表示するテキスト
     buttonText: {
       type: String,
       required: true,
     },
   },
   setup(props, context) {
+    /**
+     * ボタンが押されたことを通知する.
+     */
     const clicked = () => {
       context.emit("button-clicked");
     };

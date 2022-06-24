@@ -44,8 +44,6 @@ export default defineComponent({
 
     const created = async () => {
       const res = store.getters.getUserInformation;
-      console.log(res);
-
       userInformation.email = res.email;
       userInformation.userName = res.userName;
     };

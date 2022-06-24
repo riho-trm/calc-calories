@@ -150,7 +150,6 @@ export default defineComponent({
 
     const validateTest = async () => {
       const isFormCorrect = await v$.value.$validate();
-      console.log(v$);
       if (!isFormCorrect) return;
       // バリデーションエラーじゃない場合にやりたい処理
       handleLogin(state);
