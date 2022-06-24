@@ -1,7 +1,12 @@
 <template>
   <div class="container">
     <div class="title-wrapper">
-      <h1 class="title-logo">title（仮）</h1>
+      <img
+        class="title-img"
+        src="../assets/title_logo.png"
+        alt="タイトルロゴ"
+      />
+      <p>EASY CALCAL</p>
     </div>
 
     <div class="register-wrapper">
@@ -191,13 +196,19 @@ export default defineComponent({
 <style lang="scss" scoped>
 .container {
   .title-wrapper {
-    width: 100%;
-    height: 80px;
+    width: 40%;
+    padding-left: 2rem;
+    text-align: left;
     display: flex;
-    .title-logo {
-      align-self: center;
-      font-size: 2rem;
-      padding-left: 1.2rem;
+    align-items: center;
+    img {
+      height: 80px;
+    }
+    p {
+      width: 80%;
+      height: 100%;
+      font-size: 1.5rem;
+      font-weight: bold;
     }
   }
 
