@@ -254,8 +254,10 @@ export default defineComponent({
   },
   emits: ["close"],
   setup(props, context) {
+    // propsのisVisibleを定義し直す
     const { isVisible } = toRefs(props);
 
+    // body-scroll-lockライブラリを使用して、モーダルの背景のロックを制限
     watch(isVisible, () => {
       const modal = document.querySelector(".modal-content");
       if (isVisible.value === true) {
@@ -264,6 +266,10 @@ export default defineComponent({
         clearAllBodyScrollLocks();
       }
     });
+
+    /**
+     * モーダルを閉じることを通知.
+     */
     const close = () => {
       context.emit("close");
     };

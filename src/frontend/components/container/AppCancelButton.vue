@@ -11,12 +11,16 @@ export default defineComponent({
     BaseButton,
   },
   props: {
+    // ボタンに表示するテキスト
     buttonText: {
       type: String,
       default: "PUSH",
     },
   },
   setup(props, context) {
+    /**
+     * キャンセルボタンが押されたことをemitする.
+     */
     const cancel = () => {
       context.emit("cancel");
     };
