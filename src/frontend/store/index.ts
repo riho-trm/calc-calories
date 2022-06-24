@@ -198,7 +198,6 @@ export default createStore({
           return res.data;
         }
       } catch (error) {
-        console.log("storeのloginのエラー");
         console.log(error);
       }
     },
@@ -222,14 +221,11 @@ export default createStore({
     },
     // 栄養素一覧取得
     async getNutrients(context) {
-      console.log(context.state.authHeader);
       try {
         const res = await axios.get(
           "https://calc-carlories.herokuapp.com/nutrients/nutrientslist",
           context.state.authHeader
         );
-        console.log("storeのgetNutrientsの成功res");
-        console.log(res.data);
         context.commit("setNutrients", res.data);
       } catch (error: any) {
         throw error.response;
@@ -268,8 +264,6 @@ export default createStore({
           "https://calc-carlories.herokuapp.com/nutrients/estimatedquantitylist",
           context.state.authHeader
         );
-        console.log("storeのgetEstimatedQuantityの成功res");
-        console.log(res.data);
         context.commit("setEstimatedAmountList", res.data);
       } catch (error: any) {
         throw error.response;
