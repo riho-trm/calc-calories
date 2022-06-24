@@ -5,9 +5,9 @@ exports.config = void 0;
 exports.config = {
     jwt: {
         // シークレットキー
-        secret: "foidsDWS82Svg",
+        secret: process.env.SECRET,
         options: {
-            algorithm: "HS256",
+            algorithm: process.env.ALG,
             // トークンの有効時間
             expiresIn: "1d",
         },
