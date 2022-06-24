@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import path from "path";
 import mysql from "mysql";
@@ -29,10 +30,10 @@ const saveRouter = require("./routers/save").default;
 app.use("/save", saveRouter);
 
 const pool = mysql.createPool({
-  host: "us-cdbr-east-05.cleardb.net",
-  user: "be3a5ee1ceb501",
-  password: "224a4fb1",
-  database: "heroku_05e0dc039ab6269",
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASS,
+  database: process.env.DB,
 });
 
 // SQL発行時にデータベースへの接続が行われるので、con.connectの箇所を削除してもコードは動作する
@@ -47,5 +48,6 @@ const pool = mysql.createPool({
 app.use(express.static(path.join(__dirname, "public")));
 
 export default app.listen(port, () => {
+  console.log(process.env.TEST);
   console.log(`App is running at ${port}`);
 });

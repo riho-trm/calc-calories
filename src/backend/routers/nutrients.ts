@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import mysql from "mysql";
 import { authenticate } from "../middlewares/authenticate";
@@ -6,10 +7,10 @@ const router: express.Router = express.Router();
 router.use(express.json());
 
 const pool = mysql.createPool({
-  host: "us-cdbr-east-05.cleardb.net",
-  user: "be3a5ee1ceb501",
-  password: "224a4fb1",
-  database: "heroku_05e0dc039ab6269",
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASS,
+  database: process.env.DB,
 });
 
 // 全栄養素を取得する
