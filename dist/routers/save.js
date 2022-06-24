@@ -9,10 +9,10 @@ const authenticate_1 = require("../middlewares/authenticate");
 const router = express_1.default.Router();
 router.use(express_1.default.json());
 const pool = mysql_1.default.createPool({
-    host: "us-cdbr-east-05.cleardb.net",
-    user: "be3a5ee1ceb501",
-    password: "224a4fb1",
-    database: "heroku_05e0dc039ab6269",
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.PASS,
+    database: process.env.DB,
 });
 // myデータを新規登録する
 router.post("/savemydata", authenticate_1.authenticate, (req, res) => {

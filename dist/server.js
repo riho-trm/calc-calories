@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv/config");
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const mysql_1 = __importDefault(require("mysql"));
@@ -28,10 +29,10 @@ app.use("/nutrients", nutrientsRouter);
 const saveRouter = require("./routers/save").default;
 app.use("/save", saveRouter);
 const pool = mysql_1.default.createPool({
-    host: "us-cdbr-east-05.cleardb.net",
-    user: "be3a5ee1ceb501",
-    password: "224a4fb1",
-    database: "heroku_05e0dc039ab6269",
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.PASS,
+    database: process.env.DB,
 });
 // SQL発行時にデータベースへの接続が行われるので、con.connectの箇所を削除してもコードは動作する
 // connection.connect((err) => {
@@ -43,6 +44,7 @@ const pool = mysql_1.default.createPool({
 // 以下を削除するとレンダリングされなくなる
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
 exports.default = app.listen(port, () => {
+    console.log(process.env.TEST);
     console.log(`App is running at ${port}`);
 });
 //# sourceMappingURL=server.js.map
